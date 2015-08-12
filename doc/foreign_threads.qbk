@@ -1,0 +1,33 @@
+[/
+  (C) Copyright 20015 Chen Xu
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt).
+]
+
+Green threads can communicate with native threads outside of scheduler, which are called
+__foreign threads__.
+
+The communication isn't straightforward, as:
+
+* OS native synchronous primitives may block worker threads.
+
+* Synchronous primitives implementation in Boost.GreenThread cannot block native threads.
+
+We need a mixture of OS native synchronous primitives and green thread synchronous primitives.
+There are several ways.
+
+* Make native thread to wait on a green thread
+	
+	* Any native synchronous primitives can be used, such as mutex, condition variable, or future.
+	But you need to make sure green thread will __not__ be blocked for long time during the operation
+
+* Make green thread to wait on a native thread
+
+	* Synchronous primitives implementation in Boost.GreenThread can be used to pause/resume green
+	threads correctly, these primitives __can__ be used outside of green thread, by design, for these
+	cases.
+
+`foreign_thread_pool` is a special class to run code in foreign threads, functions are executed
+asynchronously, and a future is returned, green threads can call `get` on the returned future to
+wait until functions in foreign threads complete.

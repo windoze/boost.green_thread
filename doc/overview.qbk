@@ -1,0 +1,58 @@
+[/
+  (C) Copyright 20015 Chen Xu
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt).
+]
+
+[section:overview Overview]
+
+__Boost.GreenThread__ is a M:N green-threading implementation, built on top of Boost.Coroutine
+and Boost.Thread.
+
+[warning This is not an official Boost C++ library. It hasn't been submitted to review.]
+
+Green threads are scheduled cooperatively instead of pre-emptively, the thread contexts
+are switched at designated point, every green thread keeps running until `pause` is called
+(directly or indirectly), and resumes on `resume`.
+
+The scheduler supports the "work-stealing" feature, which can schedule green threads across
+a set of OS native threads to utilize multiple CPU cores.
+
+Boost.GreenThread conforms to C++11/14 threading standard, it supports mutex, condition
+variables, futures, many extended functions introduced by Boost.Thread are also supported,
+includes thread_group, barrier, etc.
+
+Boost.GreenThread can be integrated with Boost.Asio, all ASIO asynchronous functions with
+completion callback can be used as synchronous functions in green threads.
+
+Boost.GreenThread depends on some non header-only libraries. 
+
+* Boost.Atomic: This dependency is mandatory and you will need to link with the library.
+
+* Boost.Thread: This dependency is mandatory and you will need to link with the library.
+
+* Boost.Coroutine: This dependency is mandatory and you will need to link with the library.
+
+In order to use the classes and functions described here, you can
+either include the specific headers specified by the descriptions of
+each class or function, or include the master library header:
+
+    #include <boost/green_thread.hpp>
+
+which includes all the other headers in turn excepts some rarely used functions.
+
+Boost.GreenThread also needs to create a scheduler before starting the first green thread,
+the easiest way is:
+
+    #include <boost/green_thread.hpp>
+    #include <boost/green_thread/greenify.hpp>
+
+    int boost::green_thread::main(int argc, char *argv[]) {
+    	// Now you're in the first green thread
+    	// argc and argv are passed from real main function
+    }
+
+More info about greenify an scheduler is in the section [scheduling]
+
+[endsect]

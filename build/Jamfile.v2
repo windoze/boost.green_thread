@@ -1,0 +1,38 @@
+# Boost.GreenThread Library Build Jamfile
+
+# Distributed under the Boost Software License, Version 1.0. (See
+# accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+# Copyright (c) 2015 Chen Xu
+
+import feature ;
+import modules ;
+import toolset ;
+
+project boost/green_thread
+: requirements
+  <library>/boost/atomic/boost_atomic
+  <library>/boost/chrono/boost_chrono
+  <library>/boost/coroutine/boost_coroutine
+  <library>/boost/thread/boost_thread
+  <link>shared:<define>BOOST_GREEN_THREAD_DYN_LINK=1
+  <threading>multi
+  <define>BOOST_GREEN_THREAD_SOURCE
+: usage-requirements
+  <link>shared:<define>BOOST_GREEN_THREAD_DYN_LINK=1
+: source-location ../src
+;
+
+lib boost_green_thread
+: condition.cpp
+  future.cpp
+  mutex.cpp
+  scheduler_object.cpp
+  thread_object.cpp
+: <link>shared:<library>../../atomic/build/boost_atomic
+  <link>shared:<library>../../coroutine/build/boost_coroutine
+  <link>shared:<library>../../chrono/build/boost_chrono
+  <link>shared:<library>../../thread/build/boost_thread
+;
+
+boost-install boost_green_thread ;

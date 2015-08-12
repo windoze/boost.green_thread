@@ -1,0 +1,54 @@
+[/
+  (C) Copyright 20015 Chen Xu
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt).
+]
+
+Unlike OS native threads, you need a scheduler before running green threads.
+
+To create a scheduler and run the first green thread inside:
+
+	scheduler sched;
+	sched.start();
+	thread t(sched, entry_point, arg1, arg2, ...);
+	sched.join();
+
+A scheduler needs to be started before any green thread can be created and run, also you need
+to join scheduler to wait until all threads belong to this scheduler end.
+
+A scheduler owns a set of native threads called worker threads, all green threads belong to
+the scheduler are scheduled across all worker threads in the scheduler.
+
+A green thread is un-scheduled when it calls `pause`, and is re-scheduled when someone else
+calls `resume`, which is an asynchronous operator, it re-schedules the thread by marking it
+as runable, scheduler will continue to run the thread later.
+
+The `yield` call is the combination of a `pause` and a `resume`, which cause the thread gives
+up CPU and blocks until next round.
+
+You can create multiple scheduler in one program, each scheduler has its own set of worker
+threads.
+
+`greenify` function can be used to simplify the initialization of the scheduler:
+
+	#include <boost/green_thread.hpp>
+	#include <boost/green_thread/greenify.hpp>
+
+	int boost::green_thread::main(int argc, char *argv[]) {
+		// You're now in the first green thread in the default scheduler
+	}
+
+By default, __greenify__ defines a `main` function to initializa the default scheduler and
+create the first green thread inside, `boost::green_thread::main` is the thread entry.
+
+If you don't want the default `main`, you can use `BOOST_DONT_GREENIFY_MAIN`:
+
+	#include <boost/green_thread.hpp>
+	#define BOOST_DONT_GREENIFY_MAIN
+	#include <boost/green_thread/greenify.hpp>
+	using namespace boost::green_thread;
+
+	int main() {
+		greenify_with_sched(scheduler, thread_entry, args...);
+	}

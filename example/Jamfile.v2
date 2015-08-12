@@ -1,0 +1,6 @@
+project boost/green_thread/example
+: requirements <library>../build//boost_green_thread <threading>multi
+;
+
+exe echo_server : echo_server.cpp ;
+

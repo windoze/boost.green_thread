@@ -1,0 +1,24 @@
+[/
+  (C) Copyright 20015 Chen Xu
+  Distributed under the Boost Software License, Version 1.0.
+  (See accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt).
+]
+
+Boost.GreenThread has special impletation of streams, it uses ASIO asynchronous operations
+underlying, pauses green thread when read or write operations are blocked, and resumes it
+when the operation finishes.
+
+The `greenify` function also "greenify" C++ standard streams such as `std::cin`, by default
+C++ standard streams block the calling native thread when the operation cannot be completed
+immediately, by `greenifing` standard streams, it pauses calling green thread instead of native
+thread, the native worker thread can turn to run other runnable green threads.
+
+To disable greenifing the standard streams, you can use `BOOST_DONT_GREENIFY_STD_STREAM`
+
+	#define BOOST_DONT_GREENIFY_STD_STREAM
+	#include <boost/green_thread/greenify.hpp>
+
+By defining `BOOST_DONT_GREENIFY_STD_STREAM`, the standard streams are not changed, you need
+to take care of blocking operations on them, as they may block underlying native worker threads,
+which can cause performance loss, even dead lock if all worker threads are blocked.
