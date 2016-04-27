@@ -8,6 +8,7 @@
 // Copyright (c) 2015 Chen Xu
 //
 
+#include <mutex>
 #include <boost/thread/lock_types.hpp>
 #include <boost/green_thread/thread_only.hpp>
 #include "scheduler_object.hpp"

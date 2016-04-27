@@ -15,6 +15,7 @@
 #ifndef BOOST_GREEN_THREAD_SHARED_MUTEX_HPP
 #define BOOST_GREEN_THREAD_SHARED_MUTEX_HPP
 
+#include <mutex>
 #include <boost/green_thread/exceptions.hpp>
 #include <boost/green_thread/mutex.hpp>
 #include <boost/green_thread/condition_variable.hpp>
